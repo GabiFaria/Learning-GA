@@ -1,0 +1,3 @@
+[submodule "ANN"]
+	path = ANN
+	url = https://github.com/Wilgnne/Learning-ANN.git
