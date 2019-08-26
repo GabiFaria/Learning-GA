@@ -60,18 +60,19 @@ class Evolucao():
 		maximo = 0
 		i = 0
 		pop = []
+		pais = []
+		aval = []
 		populacao = Mae_Natureza()
 		pop=(populacao.InicializaPopulacao(tamanhopop,tamanhogene))
 		while (maximo<3150):
-			pais = []
-			aval = []
 			aval = (populacao.Avaliacao(pop,len(pop),tamanhogene))
 			pais = (populacao.Selecao(pop,aval))
 			pop.clear()
 			pop =(populacao.Crossover(pais,tamanhogene))
 			maximo = sum(aval)
 			i+=1
-			print ("Somátorio das avaliacões da ",i,"º População:",maximo)
+			aval.clear()
+			pais.clear()
 
 e = Evolucao() 
 tamanhopop = 10
