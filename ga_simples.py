@@ -73,6 +73,8 @@ class Evolucao():
 			i+=1
 			aval.clear()
 			pais.clear()
+		for i in range(len(pop)):
+			print(pop[i])
 
 e = Evolucao() 
 tamanhopop = 10
