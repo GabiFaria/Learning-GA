@@ -42,7 +42,8 @@ class Chromosome (Brain):
                 peso.append(np.array(genes[a:a+n]))
                 peso[j].shape=(aux[j],aux[j+1])
                 a = a+n
-        [print (pesosss) for pesosss in peso]
+
+        return peso
 
 class MotherNature ():
     def InitPopulation(self,sizepop,inputs:int,hidden:list,output:int, ones=True):
@@ -52,22 +53,39 @@ class MotherNature ():
             self.population.append(pop)
             print(self.population[i].pesos)
 
-    def Rating(self,Avaliador):
-        avaliacao = Avaliador.run(self.population,50)
-        pass
+    def Rating(self, Avaliador):
+        avaliation = Avaliador.run(self.population,50)
+        return avaliation
     
-    def Selection():
-        pass
+    def Selection(self,pop,avaliation):
+        probability = []
+        parents = [] 
+        for i in range(len(avaliation)):
+            probability.append((avaliation[i]/sum(avaliation))/100)
+        parents.append(choices(pop,probability, k=8))
+        return parents
 
-    def Crossover():
-        pass
-
+    def Crossover(self, parents, sizegene):
+        point = random.randint(0,sizegene-2)
+        son = []
+        son1 = []
+        fim = sizegene
+        parents.GenesperPeso();
+        for i in range(len(parents[0]-1)):
+            son.append(parents[0][i][:point]+parents[0][i+1][point:fim])
+            son1.append(parents[0][i+1][point:fim]+parents[0][i][0:point])
+        aux = son+son1
+        for j in range(len(aux)):
+            aux[j].FromGeneperPesoCreatePesos(aux[j].inputs,aux[j].hidden,aux[j].output,aux[j])
+        return aux
+        
+        '''
     def Mutation():
         pass
 
     def Competition():
         pass
         
-
+'''
 a = MotherNature()
 a.InitPopulation(2,2,[2,1],1,False)
