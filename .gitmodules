@@ -1,3 +1,3 @@
 [submodule "ANN"]
-	path = ANN
+	path = NeuralNetwork
 	url = https://github.com/Wilgnne/Learning-ANN.git

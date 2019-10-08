@@ -1,7 +1,9 @@
-import random
+import random, sys
 from ANN.ANN import Brain
 import numpy as np
 from random import choices
+import ANN.playground_Pong
+sys.path.append("ANN/")
 
 class Chromosome (Brain):
     def __init__(self, inputs, hidden, output, ones=True):
@@ -54,7 +56,8 @@ class MotherNature ():
             print(self.population[i].pesos)
 
     def Rating(self, Avaliador):
-        avaliation = Avaliador.run(self.population,50)
+        avaliation = Avaliador(self.population,50).start()
+        print (avaliation)
         return avaliation
     
     def Selection(self,pop,avaliation):
@@ -89,3 +92,4 @@ class MotherNature ():
 '''
 a = MotherNature()
 a.InitPopulation(2,2,[2,1],1,False)
+a.Rating(ANN.playground_Pong.Avaliation)
