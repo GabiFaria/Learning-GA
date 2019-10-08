@@ -1,9 +1,12 @@
-import random, sys
-from ANN.ANN import Brain
+
+import random, os
+#Add NeuralNetwork path
+os.sys.path.append("{}/NeuralNetwork".format(os.getcwd()))
+
 import numpy as np
+import NeuralNetwork.playground_Pong
+from NeuralNetwork.ANN import Brain
 from random import choices
-import ANN.playground_Pong
-sys.path.append("ANN/")
 
 class Chromosome (Brain):
     def __init__(self, inputs, hidden, output, ones=True):
@@ -56,7 +59,7 @@ class MotherNature ():
             print(self.population[i].pesos)
 
     def Rating(self, Avaliador):
-        avaliation = Avaliador(self.population,50).start()
+        avaliation = Avaliador(self.population,10).start()
         print (avaliation)
         return avaliation
     
@@ -92,4 +95,4 @@ class MotherNature ():
 '''
 a = MotherNature()
 a.InitPopulation(2,2,[2,1],1,False)
-a.Rating(ANN.playground_Pong.Avaliation)
+a.Rating(NeuralNetwork.playground_Pong.Avaliation)
