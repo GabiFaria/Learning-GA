@@ -26,7 +26,6 @@ class Chromosome (Brain):
                     genes.append(aux[k][l]) 
             else:
                 genes.append(aux[k][0])
-        
         return (genes)
 
     #Função que monta a Rede Neural a partir dos genes
@@ -56,35 +55,38 @@ class MotherNature ():
         for i in range(sizepop):
             pop=Chromosome(inputs,hidden,output,ones=False)
             self.population.append(pop)
-            print(self.population[i].pesos)
-
+        return (self.population)
+            
     def Rating(self, Avaliador):
-        avaliation = Avaliador(self.population,10).start()
-        print (avaliation)
+        avaliation = Avaliador(self.population,20).start()
         return avaliation
     
-    def Selection(self,pop,avaliation):
+    def Selection(self,avaliation):
         probability = []
         parents = [] 
+        if (sum(avaliation) == 0):
+            return self.population
         for i in range(len(avaliation)):
-            probability.append((avaliation[i]/sum(avaliation))/100)
-        parents.append(choices(pop,probability, k=8))
+            probability.append((avaliation[i]/sum(avaliation))*100)
+        parents.append(choices(self.population,probability, k=8))
         return parents
 
-    def Crossover(self, parents, sizegene):
-        point = random.randint(0,sizegene-2)
+    def Crossover(self, parents):
+        individualsgenes = []
+        for k in range(len(parents[0])):
+            individualsgenes.append(parents[0][k].GenesperPeso())
+        fim = len(individualsgenes[0])
+        point = random.randint(0,fim-2)
         son = []
         son1 = []
-        fim = sizegene
-        parents.GenesperPeso();
-        for i in range(len(parents[0]-1)):
-            son.append(parents[0][i][:point]+parents[0][i+1][point:fim])
-            son1.append(parents[0][i+1][point:fim]+parents[0][i][0:point])
+        temp = [] 
+        for i in range(len(individualsgenes[0])-1):
+            son.append(individualsgenes[i][:point]+individualsgenes[i+1][point:fim])
+            son1.append(individualsgenes[i+1][point:fim]+individualsgenes[i][0:point])
         aux = son+son1
         for j in range(len(aux)):
-            aux[j].FromGeneperPesoCreatePesos(aux[j].inputs,aux[j].hidden,aux[j].output,aux[j])
-        return aux
-        
+            temp.append(self.FromGeneperPesoCreatePesos(self.inputs,self.hidden,self.output,aux[j]))
+        return temp
         '''
     def Mutation():
         pass
@@ -95,4 +97,10 @@ class MotherNature ():
 '''
 a = MotherNature()
 a.InitPopulation(2,2,[2,1],1,False)
-a.Rating(NeuralNetwork.playground_Pong.Avaliation)
+avaliacoes = a.Rating(NeuralNetwork.playground_Pong.Avaliation)
+pais = a.Selection(avaliacoes)
+print(a.Crossover(pais))
+
+    
+
+
