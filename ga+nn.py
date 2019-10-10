@@ -61,17 +61,21 @@ class MotherNature ():
         avaliation = Avaliador(self.population,20).start()
         return avaliation
     
-    def Selection(self,avaliation):
+    def Selection(self,avaliation, inputs,hidden,outputs):
         probability = []
         parents = [] 
         if (sum(avaliation) == 0):
-            return self.population
+            parents.append(self.population)
+            return (parents)   
+
         for i in range(len(avaliation)):
             probability.append((avaliation[i]/sum(avaliation))*100)
-        parents.append(choices(self.population,probability, k=8))
+        parents.append(choices(self.population,probability, k=10))
+
         return parents
 
-    def Crossover(self, parents):
+    def Crossover(self, parents, inputs, hidden, outputs):
+        newchromossomes = []
         individualsgenes = []
         for k in range(len(parents[0])):
             individualsgenes.append(parents[0][k].GenesperPeso())
@@ -79,14 +83,17 @@ class MotherNature ():
         point = random.randint(0,fim-2)
         son = []
         son1 = []
-        temp = [] 
-        for i in range(len(individualsgenes[0])-1):
+        temp = []
+        for i in range(len(individualsgenes)-1):
             son.append(individualsgenes[i][:point]+individualsgenes[i+1][point:fim])
             son1.append(individualsgenes[i+1][point:fim]+individualsgenes[i][0:point])
         aux = son+son1
         for j in range(len(aux)):
-            temp.append(self.FromGeneperPesoCreatePesos(self.inputs,self.hidden,self.output,aux[j]))
-        return temp
+            newchromossomes.append(Chromosome(inputs,hidden,outputs,ones = True))
+            temp.append(newchromossomes[j].FromGeneperPesoCreatePesos(inputs,hidden,outputs,aux[j]))
+            newchromossomes[j].pesos = temp[j]
+        return newchromossomes
+        
         '''
     def Mutation():
         pass
@@ -95,12 +102,18 @@ class MotherNature ():
         pass
         
 '''
-a = MotherNature()
-a.InitPopulation(2,2,[2,1],1,False)
-avaliacoes = a.Rating(NeuralNetwork.playground_Pong.Avaliation)
-pais = a.Selection(avaliacoes)
-print(a.Crossover(pais))
 
-    
+def Evolution (sizepop, inputs, hidden, outputs):
+    generation = MotherNature()
+    generation.InitPopulation(sizepop,inputs, hidden, outputs)
+    rating = generation.Rating(NeuralNetwork.playground_Pong.Avaliation)
+    print (rating)
+    while (True):
+        parents = generation.Selection(rating,inputs,hidden,outputs)
+        generation.population = generation.Crossover(parents, inputs, hidden, outputs)
+        rating = generation.Rating(NeuralNetwork.playground_Pong.Avaliation)
+        print (rating)
 
 
+
+Evolution(20, 2, [20,10,4], 1)
