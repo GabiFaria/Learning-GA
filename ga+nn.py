@@ -94,14 +94,21 @@ class MotherNature ():
             newchromossomes[j].pesos = temp[j]
         return newchromossomes
         
-        '''
-    def Mutation():
-        pass
-
-    def Competition():
-        pass
         
-'''
+    def Mutation(self, inputs, hidden, outputs):
+        sizepop = len(self.population)
+        sortitionchromossome = random.randint(0,sizepop-1)
+        sizegene = len(self.population[sortitionchromossome].pesos)
+        sortitiongene  = random.randint(0,sizegene-1)
+        genes = self.population[sortitionchromossome].GenesperPeso()
+        genes[sortitiongene] = (random.random()*2)-1
+        return ()
+        #self.population[sortitionchromossome].pesos[sortitiongene]
+
+    #def Competition():
+    #    pass
+        
+
 
 def Evolution (sizepop, inputs, hidden, outputs):
     generation = MotherNature()
@@ -113,7 +120,8 @@ def Evolution (sizepop, inputs, hidden, outputs):
         generation.population = generation.Crossover(parents, inputs, hidden, outputs)
         rating = generation.Rating(NeuralNetwork.playground_Pong.Avaliation)
         print (rating)
+        generation.Mutation(inputs,hidden,outputs)
 
 
 
-Evolution(20, 2, [20,10,4], 1)
+Evolution(20, 2, [10,20,32], 1)
