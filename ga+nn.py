@@ -64,13 +64,14 @@ class MotherNature ():
     def Selection(self,avaliation, inputs,hidden,outputs):
         probability = []
         parents = [] 
+        k = 10
         if (sum(avaliation) == 0):
             parents.append(self.population)
             return (parents)   
 
         for i in range(len(avaliation)):
             probability.append((avaliation[i]/sum(avaliation))*100)
-        parents.append(choices(self.population,probability, k=10))
+        parents.append(choices(self.population,probability, k=k))
 
         return parents
 
@@ -120,7 +121,7 @@ def Evolution (sizepop, inputs, hidden, outputs):
         generation.population = generation.Crossover(parents, inputs, hidden, outputs)
         rating = generation.Rating(NeuralNetwork.playground_Pong.Avaliation)
         print (rating)
-        generation.Mutation(inputs,hidden,outputs)
+#        generation.Mutation(inputs,hidden,outputs)
 
 
 
