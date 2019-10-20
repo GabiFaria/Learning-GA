@@ -95,14 +95,14 @@ class MotherNature ():
         return newchromossomes
         
         
-    def Mutation(self, inputs, hidden, outputs):
-        sizepop = len(self.population)
-        sortitionchromossome = random.randint(0,sizepop-1)
-        sizegene = len(self.population[sortitionchromossome].pesos)
-        sortitiongene  = random.randint(0,sizegene-1)
-        genes = self.population[sortitionchromossome].GenesperPeso()
-        genes[sortitiongene] = (random.random()*2)-1
-        return ()
+    #def Mutation(self, inputs, hidden, outputs):
+     #   sizepop = len(self.population)
+      #  sortitionchromossome = random.randint(0,sizepop-1)
+       # sizegene = len(self.population[sortitionchromossome].pesos)
+        #sortitiongene  = random.randint(0,sizegene-1)
+        #genes = self.population[sortitionchromossome].GenesperPeso()
+        #genes[sortitiongene] = (random.random()*2)-1
+        #return ()
         #self.population[sortitionchromossome].pesos[sortitiongene]
 
     #def Competition():
