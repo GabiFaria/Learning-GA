@@ -1,11 +1,8 @@
 
-import random, os
-#Add NeuralNetwork path
-os.sys.path.append("{}/NeuralNetwork".format(os.getcwd()))
-
+import random
 import numpy as np
 import NeuralNetwork.playground_Pong
-from NeuralNetwork.ANN import Brain
+from NeuralNetwork import Brain
 from random import choices
 
 class Chromosome (Brain):
@@ -61,17 +58,16 @@ class MotherNature ():
         avaliation = Avaliador(self.population,20).start()
         return avaliation
     
-    def Selection(self,avaliation, inputs,hidden,outputs):
+    def Selection(self,sizeselection,avaliation):
         probability = []
         parents = [] 
-        k = 10
         if (sum(avaliation) == 0):
             parents.append(self.population)
             return (parents)   
 
         for i in range(len(avaliation)):
             probability.append((avaliation[i]/sum(avaliation))*100)
-        parents.append(choices(self.population,probability, k=k))
+        parents.append(choices(self.population,probability, k=sizeselection))
 
         return parents
 
@@ -111,18 +107,17 @@ class MotherNature ():
         
 
 
-def Evolution (sizepop, inputs, hidden, outputs):
-    generation = MotherNature()
+def Evolution (generation, sizepop, sizeselection, inputs, hidden, outputs):
     generation.InitPopulation(sizepop,inputs, hidden, outputs)
     rating = generation.Rating(NeuralNetwork.playground_Pong.Avaliation)
     print (rating)
     while (True):
-        parents = generation.Selection(rating,inputs,hidden,outputs)
+        parents = generation.Selection(sizeselection,rating,inputs,hidden,outputs)
         generation.population = generation.Crossover(parents, inputs, hidden, outputs)
         rating = generation.Rating(NeuralNetwork.playground_Pong.Avaliation)
         print (rating)
 #        generation.Mutation(inputs,hidden,outputs)
 
-
-
-Evolution(20, 2, [10,20,32], 1)
+if __name__ == "__main__":
+    generation = MotherNature()
+    Evolution(generation, 20,20, 2, [10,20,32], 1)
