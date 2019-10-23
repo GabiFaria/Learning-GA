@@ -1,12 +1,11 @@
-
 import random
 import numpy as np
-import NeuralNetwork.playground_Pong
+from NeuralNetwork.Playgraund.PlaygroundPong import Avaliation as Pong
 from NeuralNetwork import Brain
 from random import choices
 
 class Chromosome (Brain):
-    def __init__(self, inputs, hidden, output, ones=True):
+    def __init__(self, inputs, hidden, output, ones=False):
         super().__init__(inputs, hidden, output, ones=ones)
         
     #Função que separa os genes por cada peso de um neurônio
@@ -43,22 +42,33 @@ class Chromosome (Brain):
                 peso.append(np.array(genes[a:a+n]))
                 peso[j].shape=(aux[j],aux[j+1])
                 a = a+n
-
+        
         return peso
 
 class MotherNature ():
-    def InitPopulation(self,sizepop,inputs:int,hidden:list,output:int, ones=True):
+    def __init__(self, avaliador, avaliatorIterations, sizepop = 0, inputs:int = 0, hidden:list = 0, output:int = 0, ones=False):
         self.population = []
         for i in range(sizepop):
-            pop=Chromosome(inputs,hidden,output,ones=False)
+            pop = Chromosome(inputs, hidden, output, ones=ones)
             self.population.append(pop)
-        return (self.population)
-            
-    def Rating(self, Avaliador):
-        avaliation = Avaliador(self.population,20).start()
+
+        #Loop de evolução deve continuar?
+        self.evolving = True
+        #Avaliação da população atual
+        self.rating = [0 for e in range(sizepop)]
+        #Referencia da classe de avaliação
+        self.avaliatorClass = avaliador
+        #Objeto avaliador
+        self.avaliator = avaliador(self.population, avaliatorIterations)
+        #Quantidade de iterações da avaliação
+        self.avaliatorIterations = avaliatorIterations
+
+    def Rating(self):
+        self.avaliator = self.avaliatorClass(self.population, self.avaliatorIterations)
+        avaliation = self.avaliator.start()
         return avaliation
     
-    def Selection(self,sizeselection,avaliation):
+    def Selection(self, sizeselection, avaliation):
         probability = []
         parents = [] 
         if (sum(avaliation) == 0):
@@ -90,8 +100,7 @@ class MotherNature ():
             temp.append(newchromossomes[j].FromGeneperPesoCreatePesos(inputs,hidden,outputs,aux[j]))
             newchromossomes[j].pesos = temp[j]
         return newchromossomes
-        
-        
+          
     #def Mutation(self, inputs, hidden, outputs):
      #   sizepop = len(self.population)
       #  sortitionchromossome = random.randint(0,sizepop-1)
@@ -107,17 +116,18 @@ class MotherNature ():
         
 
 
-def Evolution (generation, sizepop, sizeselection, inputs, hidden, outputs):
-    generation.InitPopulation(sizepop,inputs, hidden, outputs)
-    rating = generation.Rating(NeuralNetwork.playground_Pong.Avaliation)
-    print (rating)
-    while (True):
-        parents = generation.Selection(sizeselection,rating,inputs,hidden,outputs)
+def Evolution (generation:MotherNature, sizeselection, inputs, hidden, outputs):
+    #Salvando rating da geração atual 
+    generation.rating = generation.Rating()
+    while generation.evolving:
+        parents = generation.Selection(sizeselection, generation.rating)
         generation.population = generation.Crossover(parents, inputs, hidden, outputs)
-        rating = generation.Rating(NeuralNetwork.playground_Pong.Avaliation)
-        print (rating)
-#        generation.Mutation(inputs,hidden,outputs)
+        generation.rating = generation.Rating()
+        print(generation.rating)
+        #generation.Mutation(inputs,hidden,outputs)
 
 if __name__ == "__main__":
-    generation = MotherNature()
-    Evolution(generation, 20,20, 2, [10,20,32], 1)
+    #Cria o objeto Mae Natureza
+    generation = MotherNature(Pong, 5, 20, 2, [20], 1)
+    #Loop de evolução
+    Evolution(generation, 10, 2, [20], 1)
