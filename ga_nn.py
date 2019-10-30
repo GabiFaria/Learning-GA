@@ -141,23 +141,21 @@ class MotherNature ():
 def Evolution (generation:MotherNature, sizeselection, inputs, hidden, outputs,callback=None):
     #Salvando rating da geração atual 
     generation.rating = generation.Rating()
-    #print("primeira geracao")
-    #print(generation.rating)
     while generation.evolving:
+        #Faz a seleção dos pais
         parents = generation.Selection(sizeselection, generation.rating)
+        #Salva a população anterior
         generation.lastpopulation = generation.population
+        #Gera uma nova população a patir dos pais selecionados
         generation.population = generation.Crossover(parents, inputs, hidden, outputs)
+        #Muta a população
         generation.Mutation(0.03,0.10)
+        #Salva a avaliação anterior
         generation.lastavaliation = generation.rating
+        #Avalia população
         generation.rating = generation.Rating()
-        #print("avaliacao da nova pop")
-        #print(generation.rating)
-        #generation.population = generation.Tournament()
-        #print("avaliacao após tournament")
-        #for j in range(len(generation.population)):
-        #    print(generation.population[j])
-        #    print("\n")
-        #generation.rating = generation.Rating()
+        #Faz o torneio
+        generation.Tournament()
         if (callback!=None):
             callback()
         generation.generationCont +=1
