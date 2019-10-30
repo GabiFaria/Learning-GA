@@ -72,6 +72,10 @@ class MotherNature ():
 
         self.generationCont = 0
 
+        self.lastavaliation = 0
+
+        self.lastpopulation = []
+
     def Rating(self):
         self.avaliator = self.avaliatorClass(self.population, self.avaliatorIterations)
         avaliation = self.avaliator.start()
@@ -112,25 +116,54 @@ class MotherNature ():
             newchromossomes[j].pesos = temp[j]
         return newchromossomes
           
-    def Mutation(self, avaliacao, nmutation):
-        probability = []
-        for i in range(len(avaliacao)):
-            probability.append((sum(avaliacao)/avaliacao[i])*100)
-        
-
-
+    def Mutation(self, avaliation, chromossomeprobability, geneprobability):
+        individualgenes = []
+        temppesos = []
+        newchromossome = []
+        for k in range(len(self.population)):
+            individualgenes.append(self.population[k].GenesperPeso())
+        for i in range(len(self.population)):
+            mut = random.random()
+            if (mut<=chromossomeprobability):
+                print("mutou cromossomo")
+                for j in range(len(individualgenes[i])):
+                    mut1 = random.random()
+                    if (mut1<=geneprobability):
+                        print("mutou gene")
+                        individualgenes[i][j] = (random.random()*2)-1
+            temppesos.append(self.population[i].FromGeneperPesoCreatePesos(self.population[i].inputs,self.population[i].hidden,self.population[i].output,individualgenes[i]))
+            self.population[i].pesos = temppesos[i]
+    '''
+    def Tournament (self):
+        for i in range(len(self.lastavaliation)):
+            if (self.lastavaliation[i]>self.rating[i]):
+                self.population[i]= self.lastpopulation[i]
+        for j in range(len(self.population)):
+            print(self.population[j].pesos)
+            print("\n")
+'''
       
 def Evolution (generation:MotherNature, sizeselection, inputs, hidden, outputs,callback=None):
     #Salvando rating da geração atual 
     generation.rating = generation.Rating()
+    #print("primeira geracao")
+    #print(generation.rating)
     while generation.evolving:
         parents = generation.Selection(sizeselection, generation.rating)
+        generation.lastpopulation = generation.population
         generation.population = generation.Crossover(parents, inputs, hidden, outputs)
+        generation.lastavaliation = generation.rating
         generation.rating = generation.Rating()
+        #print("avaliacao da nova pop")
+        #print(generation.rating)
+        #generation.population = generation.Tournament()
+        #print("avaliacao após tournament")
+        #generation.rating = generation.Rating()
         if (callback!=None):
             callback()
         generation.generationCont +=1
-        #generation.Mutation(inputs,hidden,outputs)
+        if (sum(generation.lastavaliation)>sum(generation.rating)): 
+            generation.Mutation(generation.rating,0.03,0.10)
 
 if __name__ == "__main__":
     #Cria o objeto Mae Natureza
