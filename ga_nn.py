@@ -125,11 +125,9 @@ class MotherNature ():
         for i in range(len(self.population)):
             mut = random.random()
             if (mut<=chromossomeprobability):
-                print("mutou cromossomo")
                 for j in range(len(individualgenes[i])):
                     mut1 = random.random()
                     if (mut1<=geneprobability):
-                        print("mutou gene")
                         individualgenes[i][j] = (random.random()*2)-1
             temppesos.append(self.population[i].FromGeneperPesoCreatePesos(self.population[i].inputs,self.population[i].hidden,self.population[i].output,individualgenes[i]))
             self.population[i].pesos = temppesos[i]
