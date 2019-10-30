@@ -70,6 +70,8 @@ class MotherNature ():
         #Quantidade de iterações da avaliação
         self.avaliatorIterations = avaliatorIterations
 
+        self.generationCont = 0
+
     def Rating(self):
         self.avaliator = self.avaliatorClass(self.population, self.avaliatorIterations)
         avaliation = self.avaliator.start()
@@ -121,17 +123,17 @@ class MotherNature ():
 def Evolution (generation:MotherNature, sizeselection, inputs, hidden, outputs,callback=None):
     #Salvando rating da geração atual 
     generation.rating = generation.Rating()
-    print(generation.rating)
     while generation.evolving:
         parents = generation.Selection(sizeselection, generation.rating)
         generation.population = generation.Crossover(parents, inputs, hidden, outputs)
         generation.rating = generation.Rating()
         if (callback!=None):
             callback()
+        generation.generationCont +=1
         #generation.Mutation(inputs,hidden,outputs)
 
 if __name__ == "__main__":
     #Cria o objeto Mae Natureza
     generation = MotherNature(Pong, 10, 20, 2, [20], 1)
     #Loop de evolução
-    Evolution(generation, 11, 2, [20], 1)
+    Evolution(generation, 11, 2, [20], 1, lambda:print(generation.rating))
