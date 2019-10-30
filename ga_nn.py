@@ -7,6 +7,14 @@ from random import choices
 class Chromosome (Brain):
     def __init__(self, inputs, hidden, output, ones=False):
         super().__init__(inputs, hidden, output, ones=ones)
+        #Número de entradas da RN
+        self.inputs = inputs
+        #Número de camadas escondidas da RN
+        self.hidden = hidden
+        #Número de saída da RN
+        self.output = output
+        #Se a RN é iniciada com 1's
+        self.ones = ones
         
     #Função que separa os genes por cada peso de um neurônio
     def GenesperPeso(self):
@@ -51,7 +59,6 @@ class MotherNature ():
         for i in range(sizepop):
             pop = Chromosome(inputs, hidden, output, ones=ones)
             self.population.append(pop)
-
         #Loop de evolução deve continuar?
         self.evolving = True
         #Avaliação da população atual
@@ -70,16 +77,18 @@ class MotherNature ():
     
     def Selection(self, sizeselection, avaliation):
         probability = []
-        parents = [] 
+        parents = []
         if (sum(avaliation) == 0):
-            parents.append(self.population)
+            a = MotherNature(self.avaliatorClass,self.avaliatorIterations, sizeselection, self.population[0].inputs, self.population[0].hidden, self.population[0].output, False)
+            parents.append(a.population)
+            
             return (parents)   
-
-        for i in range(len(avaliation)):
-            probability.append((avaliation[i]/sum(avaliation))*100)
-        parents.append(choices(self.population,probability, k=sizeselection))
-
-        return parents
+        else:
+            for i in range(len(avaliation)):
+                probability.append((avaliation[i]/sum(avaliation))*100)
+            parents.append(choices(self.population,probability, k=sizeselection))
+            
+            return parents
 
     def Crossover(self, parents, inputs, hidden, outputs):
         newchromossomes = []
@@ -101,33 +110,28 @@ class MotherNature ():
             newchromossomes[j].pesos = temp[j]
         return newchromossomes
           
-    #def Mutation(self, inputs, hidden, outputs):
-     #   sizepop = len(self.population)
-      #  sortitionchromossome = random.randint(0,sizepop-1)
-       # sizegene = len(self.population[sortitionchromossome].pesos)
-        #sortitiongene  = random.randint(0,sizegene-1)
-        #genes = self.population[sortitionchromossome].GenesperPeso()
-        #genes[sortitiongene] = (random.random()*2)-1
-        #return ()
-        #self.population[sortitionchromossome].pesos[sortitiongene]
-
-    #def Competition():
-    #    pass
+    def Mutation(self, avaliacao, nmutation):
+        probability = []
+        for i in range(len(avaliacao)):
+            probability.append((sum(avaliacao)/avaliacao[i])*100)
         
 
 
-def Evolution (generation:MotherNature, sizeselection, inputs, hidden, outputs):
+      
+def Evolution (generation:MotherNature, sizeselection, inputs, hidden, outputs,callback=None):
     #Salvando rating da geração atual 
     generation.rating = generation.Rating()
+    print(generation.rating)
     while generation.evolving:
         parents = generation.Selection(sizeselection, generation.rating)
         generation.population = generation.Crossover(parents, inputs, hidden, outputs)
         generation.rating = generation.Rating()
-        print(generation.rating)
+        if (callback!=None):
+            callback()
         #generation.Mutation(inputs,hidden,outputs)
 
 if __name__ == "__main__":
     #Cria o objeto Mae Natureza
-    generation = MotherNature(Pong, 5, 20, 2, [20], 1)
+    generation = MotherNature(Pong, 10, 20, 2, [20], 1)
     #Loop de evolução
-    Evolution(generation, 10, 2, [20], 1)
+    Evolution(generation, 11, 2, [20], 1)
