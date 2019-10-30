@@ -116,7 +116,7 @@ class MotherNature ():
             newchromossomes[j].pesos = temp[j]
         return newchromossomes
           
-    def Mutation(self, avaliation, chromossomeprobability, geneprobability):
+    def Mutation(self,chromossomeprobability, geneprobability):
         individualgenes = []
         temppesos = []
         newchromossome = []
@@ -131,15 +131,12 @@ class MotherNature ():
                         individualgenes[i][j] = (random.random()*2)-1
             temppesos.append(self.population[i].FromGeneperPesoCreatePesos(self.population[i].inputs,self.population[i].hidden,self.population[i].output,individualgenes[i]))
             self.population[i].pesos = temppesos[i]
-    '''
+
     def Tournament (self):
         for i in range(len(self.lastavaliation)):
             if (self.lastavaliation[i]>self.rating[i]):
-                self.population[i]= self.lastpopulation[i]
-        for j in range(len(self.population)):
-            print(self.population[j].pesos)
-            print("\n")
-'''
+                self.population[i] = self.lastpopulation[i]
+        
       
 def Evolution (generation:MotherNature, sizeselection, inputs, hidden, outputs,callback=None):
     #Salvando rating da geração atual 
@@ -150,18 +147,21 @@ def Evolution (generation:MotherNature, sizeselection, inputs, hidden, outputs,c
         parents = generation.Selection(sizeselection, generation.rating)
         generation.lastpopulation = generation.population
         generation.population = generation.Crossover(parents, inputs, hidden, outputs)
+        generation.Mutation(0.03,0.10)
         generation.lastavaliation = generation.rating
         generation.rating = generation.Rating()
         #print("avaliacao da nova pop")
         #print(generation.rating)
         #generation.population = generation.Tournament()
         #print("avaliacao após tournament")
+        #for j in range(len(generation.population)):
+        #    print(generation.population[j])
+        #    print("\n")
         #generation.rating = generation.Rating()
         if (callback!=None):
             callback()
         generation.generationCont +=1
-        if (sum(generation.lastavaliation)>sum(generation.rating)): 
-            generation.Mutation(generation.rating,0.03,0.10)
+
 
 if __name__ == "__main__":
     #Cria o objeto Mae Natureza
