@@ -83,13 +83,13 @@ class MotherNature ():
         if (sum(avaliation) == 0):
             a = MotherNature(self.avaliatorClass,self.avaliatorIterations, sizeselection, self.population[0].inputs, self.population[0].hidden, self.population[0].output, False)
             parents.append(a.population)
-            
+            random.shuffle(parents)
             return (parents)   
         else:
             for i in range(len(avaliation)):
                 probability.append((avaliation[i]/sum(avaliation))*100)
             parents.append(choices(self.population,probability, k=sizeselection))
-            
+            random.shuffle(parents)
             return parents
 
     def Crossover(self, parents, inputs, hidden, outputs):
